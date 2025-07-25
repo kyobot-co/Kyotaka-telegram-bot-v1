@@ -26,7 +26,13 @@ from commands.ping import ping
 from commands.uptime import uptime
 from commands.nsfw import nsfw
 from commands.ai_kyo import ai_kyo
-from commands.ban import ban     
+from commands.ban import ban
+
+from commands.mute import mute
+from commands.unmute import unmute
+from commands.nightmode import nightmode
+from commands.lock import lock
+from commands.tagall import tagall
 
 TOKEN = "LE_TOKEN_DE_TON_BOT"
 
@@ -70,6 +76,12 @@ async def main() -> None:
     app.add_handler(CommandHandler("uptime", uptime))
     app.add_handler(CommandHandler("nsfw", nsfw))
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
+
+    app.add_handler(CommandHandler("mute", mute))
+    app.add_handler(CommandHandler("unmute", unmute))
+    app.add_handler(CommandHandler("nightmode", nightmode))
+    app.add_handler(CommandHandler("lock", lock))
+    app.add_handler(CommandHandler("tagall", tagall))
 
     logging.info("✅ Bot lancé et prêt à répondre ✨")
 
