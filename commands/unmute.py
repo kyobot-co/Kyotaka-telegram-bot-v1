@@ -1,10 +1,10 @@
-from telegram import ChatPermissions
+from telegram import Update, ChatPermissions
+from telegram.ext import CallbackContext
 
-async def unmute(update, context):
+async def unmute(update: Update, context: CallbackContext):
     if not update.message.reply_to_message:
         await update.message.reply_text("Réponds au message de la personne à unmute.")
         return
-
     user = update.message.reply_to_message.from_user
     chat = update.effective_chat
     bot = context.bot
@@ -21,7 +21,7 @@ async def unmute(update, context):
             can_change_info=False,
             can_invite_users=True,
             can_pin_messages=False,
-        ),
+        )
     )
 
     await update.message.reply_text(f"{user.full_name} peut maintenant parler.")
