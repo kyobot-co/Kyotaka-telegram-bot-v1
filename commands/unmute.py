@@ -25,5 +25,3 @@ async def unmute(update, context):
     )
 
     await update.message.reply_text(f"{user.full_name} peut maintenant parler.")
-
-app.add_handler(CommandHandler("unmute", unmute))
