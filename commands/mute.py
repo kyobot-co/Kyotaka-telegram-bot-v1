@@ -1,19 +1,23 @@
-from telegram import ChatPermissions
-from telegram.ext import CommandHandler
+from telegram import ChatPermissions, Update
+from telegram.ext import ContextTypes
 from datetime import timedelta, datetime
 
-async def mute(update, context):
+async def mute(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message.reply_to_message:
         await update.message.reply_text("Réponds au message de la personne à mute.")
         return
+
     user = update.message.reply_to_message.from_user
     chat = update.effective_chat
     bot = context.bot
+
     try:
         duration = int(context.args[0])
     except (IndexError, ValueError):
-        duration = 60
+        duration = 1  # Par défaut 1 heure
+
     until_date = datetime.utcnow() + timedelta(hours=duration)
+
     await bot.restrict_chat_member(
         chat_id=chat.id,
         user_id=user.id,
@@ -29,6 +33,5 @@ async def mute(update, context):
         ),
         until_date=until_date
     )
-    await update.message.reply_text(f"{user.full_name} est mute pour {duration} heure(s).")
 
-app.add_handler(CommandHandler("mute", mute))
+    await update.message.reply_text(f"{user.full_name} est mute pour {duration} heure(s).")
