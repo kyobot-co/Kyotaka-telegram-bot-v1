@@ -27,7 +27,6 @@ from commands.uptime import uptime
 from commands.nsfw import nsfw
 from commands.ai_kyo import ai_kyo
 from commands.ban import ban
-
 from commands.mute import mute
 from commands.unmute import unmute
 from commands.nightmode import nightmode
@@ -46,7 +45,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def restart_loop(app):
     while True:
-        await asyncio.sleep(60*60*2)
+        await asyncio.sleep(7200)
         logging.info("🔄 Restart automatique du bot.")
         await app.stop()
         await app.shutdown()
@@ -77,7 +76,6 @@ async def main() -> None:
     app.add_handler(CommandHandler("uptime", uptime))
     app.add_handler(CommandHandler("nsfw", nsfw))
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
-
     app.add_handler(CommandHandler("mute", mute))
     app.add_handler(CommandHandler("unmute", unmute))
     app.add_handler(CommandHandler("nightmode", nightmode))
