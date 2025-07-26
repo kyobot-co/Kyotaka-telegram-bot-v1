@@ -1,6 +1,5 @@
 import logging
 import time
-import asyncio
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
@@ -29,7 +28,7 @@ from commands.nightmode import nightmode
 from commands.lock import lock
 from commands.tagall import tagall
 
-TOKEN = "TON_TOKEN"
+TOKEN = "LE_TOKEN_DU_BOT"
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
@@ -66,5 +65,3 @@ async def main():
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
     logging.info("✅ Bot prêt")
     await app.run_polling()
-
-asyncio.run(main())
