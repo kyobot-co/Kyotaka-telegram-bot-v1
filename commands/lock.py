@@ -1,6 +1,5 @@
 from pyrogram import Client, filters
-from pyrogram.enums import ChatPermissions
-from pyrogram.types import Message
+from pyrogram.types import Message, ChatPermissions
 
 LOCKED_PERMS = {
     "links": {"invite_links": False},
@@ -29,25 +28,27 @@ UNLOCKED_PERMS = {
 }
 
 @Client.on_message(filters.command("lock") & filters.group)
-async def lock_cmd(_, m: Message):
-    if not m.from_user or not m.from_user.id in [admin.user.id async for admin in m.chat.get_members(filter="administrators")]:
-        return
+async def lock_cmd(client, m: Message):
+    admins = [member.user.id async for member in client.get_chat_members(m.chat.id, filter="administrators")]
+    if not m.from_user or m.from_user.id not in admins:
+        return await m.reply_text("Tu n'es pas admin.")
     if len(m.command) < 2:
         return await m.reply_text("Usage: /lock [links/photos/videos/stickers/all]")
     typ = m.command[1].lower()
     if typ not in LOCKED_PERMS:
         return await m.reply_text("Type invalide.")
-    await m.chat.set_permissions(ChatPermissions(**LOCKED_PERMS[typ]))
-    await m.reply_text(f"{typ} verrouillé.")
+    await client.set_chat_permissions(m.chat.id, ChatPermissions(**LOCKED_PERMS[typ]))
+    await m.reply_text(f"🔒 {typ} verrouillé.")
 
 @Client.on_message(filters.command("unlock") & filters.group)
-async def unlock_cmd(_, m: Message):
-    if not m.from_user or not m.from_user.id in [admin.user.id async for admin in m.chat.get_members(filter="administrators")]:
-        return
+async def unlock_cmd(client, m: Message):
+    admins = [member.user.id async for member in client.get_chat_members(m.chat.id, filter="administrators")]
+    if not m.from_user or m.from_user.id not in admins:
+        return await m.reply_text("Tu n'es pas admin.")
     if len(m.command) < 2:
         return await m.reply_text("Usage: /unlock [links/photos/videos/stickers/all]")
     typ = m.command[1].lower()
     if typ not in UNLOCKED_PERMS:
         return await m.reply_text("Type invalide.")
-    await m.chat.set_permissions(ChatPermissions(**UNLOCKED_PERMS[typ]))
-    await m.reply_text(f"{typ} déverrouillé.")
+    await client.set_chat_permissions(m.chat.id, ChatPermissions(**UNLOCKED_PERMS[typ]))
+    await m.reply_text(f"🔓 {typ} déverrouillé.")
