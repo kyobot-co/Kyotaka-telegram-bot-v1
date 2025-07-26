@@ -31,9 +31,8 @@ from commands.ban import ban
 from commands.mute import mute
 from commands.unmute import unmute
 from commands.nightmode import nightmode
+from commands.lock import lock
 from commands.tagall import tagall
-
-import commands.lock
 
 TOKEN = "TON_TOKEN"
 
@@ -51,6 +50,7 @@ async def restart_loop(app):
         logging.info("🔄 Restart automatique du bot.")
         await app.stop()
         await app.shutdown()
+        await app.initialize()
         await app.start()
 
 async def main() -> None:
@@ -81,12 +81,15 @@ async def main() -> None:
     app.add_handler(CommandHandler("mute", mute))
     app.add_handler(CommandHandler("unmute", unmute))
     app.add_handler(CommandHandler("nightmode", nightmode))
+    app.add_handler(CommandHandler("lock", lock))
     app.add_handler(CommandHandler("tagall", tagall))
 
     logging.info("✅ Bot lancé et prêt à répondre ✨")
 
-    await app.start()
     asyncio.create_task(restart_loop(app))
+
+    await app.initialize()
+    await app.start()
     await app.updater.start_polling()
     await app.updater.idle()
 
