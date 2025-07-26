@@ -36,57 +36,35 @@ logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🔮 Bienvenue dans DarkAI Bot.\nTape /help pour voir les commandes.")
 
-async def auto_restart(app):
-    while True:
-        await asyncio.sleep(7200)
-        logging.info("🔄 Redémarrage automatique")
-        try:
-            await app.shutdown()
-            await app.initialize()
-            await app.start()
-        except Exception as e:
-            logging.error(f"Erreur au redémarrage : {e}")
-
 async def main():
     app = ApplicationBuilder().token(TOKEN).build()
     app.bot_data["start_time"] = time.time()
-    handlers = [
-        ("start", start),
-        ("help", help_command),
-        ("kick", kick),
-        ("unban", unban),
-        ("ban", ban),
-        ("info", info),
-        ("ipinfo", ipinfo),
-        ("ttp", ttp),
-        ("lirik", lirik),
-        ("ass", ass),
-        ("boobs", boobs),
-        ("hboobs", hboobs),
-        ("darkgen", darkgen),
-        ("darkweather", darkweather),
-        ("defdark", defdark),
-        ("darkquote", darkquote),
-        ("ping", ping),
-        ("uptime", uptime),
-        ("nsfw", nsfw),
-        ("mute", mute),
-        ("unmute", unmute),
-        ("nightmode", nightmode),
-        ("lock", lock),
-        ("tagall", tagall)
-    ]
-    for cmd, func in handlers:
-        app.add_handler(CommandHandler(cmd, func))
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("kick", kick))
+    app.add_handler(CommandHandler("unban", unban))
+    app.add_handler(CommandHandler("ban", ban))
+    app.add_handler(CommandHandler("info", info))
+    app.add_handler(CommandHandler("ipinfo", ipinfo))
+    app.add_handler(CommandHandler("ttp", ttp))
+    app.add_handler(CommandHandler("lirik", lirik))
+    app.add_handler(CommandHandler("ass", ass))
+    app.add_handler(CommandHandler("boobs", boobs))
+    app.add_handler(CommandHandler("hboobs", hboobs))
+    app.add_handler(CommandHandler("darkgen", darkgen))
+    app.add_handler(CommandHandler("darkweather", darkweather))
+    app.add_handler(CommandHandler("defdark", defdark))
+    app.add_handler(CommandHandler("darkquote", darkquote))
+    app.add_handler(CommandHandler("ping", ping))
+    app.add_handler(CommandHandler("uptime", uptime))
+    app.add_handler(CommandHandler("nsfw", nsfw))
+    app.add_handler(CommandHandler("mute", mute))
+    app.add_handler(CommandHandler("unmute", unmute))
+    app.add_handler(CommandHandler("nightmode", nightmode))
+    app.add_handler(CommandHandler("lock", lock))
+    app.add_handler(CommandHandler("tagall", tagall))
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
     logging.info("✅ Bot prêt")
-    asyncio.create_task(auto_restart(app))
     await app.run_polling()
 
-if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    try:
-        loop.create_task(main())
-        loop.run_forever()
-    except (KeyboardInterrupt, SystemExit):
-        pass
+asyncio.run(main())
