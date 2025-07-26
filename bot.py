@@ -50,7 +50,6 @@ async def auto_restart(app):
 async def main():
     app = ApplicationBuilder().token(TOKEN).build()
     app.bot_data["start_time"] = time.time()
-
     handlers = [
         ("start", start),
         ("help", help_command),
@@ -77,12 +76,9 @@ async def main():
         ("lock", lock),
         ("tagall", tagall)
     ]
-
     for cmd, func in handlers:
         app.add_handler(CommandHandler(cmd, func))
-
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
-
     logging.info("✅ Bot prêt")
     asyncio.create_task(auto_restart(app))
     await app.run_polling()
