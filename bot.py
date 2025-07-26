@@ -43,16 +43,15 @@ logging.basicConfig(
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🔮 Bienvenue dans DarkAI Bot.\nTape /help pour voir les commandes.")
 
-async def restart_loop(app):
+async def auto_restart(app):
     while True:
-        await asyncio.sleep(7200)
-        logging.info("🔄 Restart automatique du bot.")
-        await app.stop()
+        await asyncio.sleep(60 * 60 * 2)
+        logging.info("🔄 Redémarrage automatique")
         await app.shutdown()
         await app.initialize()
         await app.start()
 
-async def main() -> None:
+async def main():
     app = ApplicationBuilder().token(TOKEN).build()
     app.bot_data["start_time"] = time.time()
 
@@ -82,15 +81,9 @@ async def main() -> None:
     app.add_handler(CommandHandler("lock", lock))
     app.add_handler(CommandHandler("tagall", tagall))
 
-    logging.info("✅ Bot lancé et prêt à répondre ✨")
-
-    asyncio.create_task(restart_loop(app))
-
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
-    await app.updater.idle()
+    logging.info("✅ Bot prêt")
+    asyncio.create_task(auto_restart(app))
+    await app.run_polling()
 
 if __name__ == "__main__":
-    import asyncio
     asyncio.run(main())
