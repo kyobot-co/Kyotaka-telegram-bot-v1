@@ -1,5 +1,6 @@
 import logging
 import time
+import asyncio
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
@@ -28,14 +29,14 @@ from commands.nightmode import nightmode
 from commands.lock import lock
 from commands.tagall import tagall
 
-TOKEN = "LE_TOKEN_DU_BOT"
+TOKEN = "7896770652:AAFxLT5-5KZN9XWYqDCJWit7WTpd4HOm1yo"
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🔮 Bienvenue dans DarkAI Bot.\nTape /help pour voir les commandes.")
 
-async def main():
+async def run_bot():
     app = ApplicationBuilder().token(TOKEN).build()
     app.bot_data["start_time"] = time.time()
     app.add_handler(CommandHandler("start", start))
@@ -65,3 +66,6 @@ async def main():
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
     logging.info("✅ Bot prêt")
     await app.run_polling()
+
+if __name__ == "__main__":
+    asyncio.run(run_bot())
