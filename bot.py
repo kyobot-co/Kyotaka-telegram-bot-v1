@@ -1,7 +1,10 @@
 import logging
 import time
+import threading
+from flask import Flask
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+
 
 from commands.kick import kick
 from commands.unban import unban
@@ -32,12 +35,21 @@ TOKEN = "LE_TOKEN_DE_TON_BOT"
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
+# KYOTAKA 
+app_flask = Flask(__name__)
+
+@app_flask.route("/")
+def home():
+    return "Bot Telegram DarkAI est en ligne ✅"
+
+# KYOTAKA 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🔮 Bienvenue dans DarkAI Bot.\nTape /help pour voir les commandes.")
 
-def main():
+def start_bot():
     app = ApplicationBuilder().token(TOKEN).build()
     app.bot_data["start_time"] = time.time()
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("kick", kick))
@@ -63,7 +75,11 @@ def main():
     app.add_handler(CommandHandler("lock", lock))
     app.add_handler(CommandHandler("tagall", tagall))
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
+
     app.run_polling()
 
 if __name__ == "__main__":
-    main()
+    # KYOTAKA 
+    threading.Thread(target=start_bot).start()
+    # KYOTAKA 
+    app_flask.run(host="0.0.0.0", port=10000)
