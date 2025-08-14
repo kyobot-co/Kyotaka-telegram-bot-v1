@@ -3,7 +3,7 @@ import threading
 import asyncio
 from flask import Flask
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 from commands.kick import kick
 from commands.unban import unban
 from commands.help_cmd import help_command
@@ -28,6 +28,7 @@ from commands.unmute import unmute
 from commands.nightmode import nightmode
 from commands.lock import lock
 from commands.tagall import tagall
+from commands.welcome import add_handler as add_welcome_handler
 import time
 import os
 
@@ -83,6 +84,8 @@ async def run_bot():
 
     for handler in handlers:
         application.add_handler(handler)
+    
+    add_welcome_handler(application)
 
     await application.initialize()
     await application.start()
@@ -98,9 +101,9 @@ def run_flask():
 if __name__ == "__main__":
     flask_thread = threading.Thread(target=run_flask, daemon=True)
     bot_thread = threading.Thread(target=lambda: asyncio.run(run_bot()), daemon=True)
-    
+
     flask_thread.start()
     bot_thread.start()
-    
+
     flask_thread.join()
     bot_thread.join()
