@@ -1,17 +1,43 @@
-from telegram import Update, ChatMember
-from telegram.ext import ContextTypes
+from telegram import Update
+from telegram.ext import ContextTypes, MessageHandler, filters
+from telegram.constants import ParseMode
 
 async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.new_chat_members:
+        return
+    
     for member in update.message.new_chat_members:
-        user_name = member.full_name
-        group_name = update.effective_chat.title
+        try:
+            if member.is_bot:  # Ignore les autres bots
+                continue
+                
+            user_name = member.full_name
+            group_name = update.effective_chat.title
+            
+            # Récupère la photo de profil (seulement si disponible)
+            photo = await context.bot.get_user_profile_photos(member.id, limit=1)
+            
+            welcome_msg = (
+                f"🌑 *Bienvenue dans l'Ombre, {user_name}*\n\n"
+                f"Tu pénètres dans *{group_name}*\n"
+                f"Un lieu où seuls les initiés persistent...\n\n"
+                f"© KYOTAKA SYSTEM"
+            )
+            
+            if photo.photos:
+                await update.effective_chat.send_photo(
+                    photo=photo.photos[0][-1].file_id,
+                    caption=welcome_msg,
+                    parse_mode=ParseMode.MARKDOWN
+                )
+            else:
+                await update.effective_chat.send_message(
+                    text=welcome_msg,
+                    parse_mode=ParseMode.MARKDOWN
+                )
+                
+        except Exception:
+            pass  # Gestion silencieuse des erreurs
 
-        message = (
-            f"🕶️ Bienvenue à toi, {user_name}.\n"
-            f"Tu viens d’entrer dans {group_name}...\n"
-            f"Ici, chaque silence a un sens.\n"
-            f"Marche sans bruit, observe sans parler.\n"
-            f"Seuls les esprits éveillés comprennent ce lieu."
-        )
-
-        await update.message.reply_text(message)
+def add_handler(application):
+    application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
