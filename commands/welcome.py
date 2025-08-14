@@ -8,7 +8,7 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     for member in update.message.new_chat_members:
         try:
-            if member.is_bot:  # Ignore les autres bots
+            if member.is_bot:  
                 continue
                 
             user_name = member.full_name
