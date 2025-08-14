@@ -14,13 +14,13 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
             user_name = member.full_name
             group_name = update.effective_chat.title
             
-            # Récupère la photo de profil (seulement si disponible)
+            
             photo = await context.bot.get_user_profile_photos(member.id, limit=1)
             
             welcome_msg = (
                 f"🌑 *Bienvenue dans l'Ombre, {user_name}*\n\n"
                 f"Tu pénètres dans *{group_name}*\n"
-                f"Un lieu où seuls les initiés persistent...\n\n"
+                f"Un lieu où seuls les vrais persistent...\n\n"
                 f"© KYOTAKA SYSTEM"
             )
             
@@ -37,7 +37,7 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
                 
         except Exception:
-            pass  # Gestion silencieuse des erreurs
+            pass  
 
 def add_handler(application):
     application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
