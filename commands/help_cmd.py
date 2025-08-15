@@ -1,48 +1,78 @@
-from telegram import Update
+from telegram import Update, InputMediaPhoto
 from telegram.ext import CallbackContext
 
 async def help_command(update: Update, context: CallbackContext):
+    help_image_url = "https://i.ibb.co/KhYC4FY/1221bc0bdd2354b42b293317ff2adbcf-icon.png"
+    
     help_text = """
-🧠 *Commandes disponibles :*
+╔════════════════╗
+       🧠 *DARK KYOTAKA HELP* 📱
+╚════════════════╝
 
-/start – Démarrer le bot
-/help – Afficher cette aide
+📱 *Commandes Mobile :*
+
+┏━━━━━━━━━━━━━━━━┓
+┃ /start ┃ Démarrer le bot
+┃ /help  ┃ Aide mobile
+┗━━━━━━━━━━━━━━━━┛
 
 👮 *Admin*
-/kick – Expulser un membre
-/unban – Débannir un utilisateur
-/ban – Bannir un utilisateur
-/mute – Rendre muet un membre
-/unmute – Réactiver un membre
-/nightmode – Activer/Désactiver le mode nuit du groupe
-/lock – Verrouiller temporairement le groupe
+┏━━━━━━━━━━━━━━━━┓
+┃ /kick      ┃ Expulser
+┃ /unban     ┃ Débannir
+┃ /ban       ┃ Bannir
+┃ /mute      ┃ Rendre muet
+┃ /unmute    ┃ Réactiver
+┃ /nightmode ┃ Mode nuit
+┃ /lock      ┃ Verrouiller
+┗━━━━━━━━━━━━━━━━┛
 
 📡 *Réseau*
-/ipinfo <ip> – Obtenir des infos sur une adresse IP
+┏━━━━━━━━━━━━━━━━┓
+┃ /ipinfo <ip> ┃ Infos IP
+┗━━━━━━━━━━━━━━━━┛
 
 🎵 *Média*
-/lirik <titre> – Obtenir les paroles d’une chanson
-/ttp <texte> – Générer un sticker texte
+┏━━━━━━━━━━━━━━━━┓
+┃ /lirik <titre> ┃ Paroles
+┃ /ttp <texte>   ┃ Sticker texte
+┗━━━━━━━━━━━━━━━━┛
 
 🔞 *NSFW*
-/nsfw – Menu NSFW
-/ass – Image NSFW de fesses 🍑
-/boobs – Image NSFW aléatoire
-/hboobs – Image NSFW hboobs
+┏━━━━━━━━━━━━━━━━┓
+┃ /nsfw   ┃ Menu
+┃ /ass    ┃ 🍑
+┃ /boobs  ┃ Aléatoire
+┃ /hboobs ┃ HB content
+┗━━━━━━━━━━━━━━━━┛
 
-🎨 *Dark & Fun*
-/darkgen <prompt> – Génère une image dark
-/darkweather <ville> – Météo version dark
-/darkquote – Citation dark aléatoire
+🎨 *Dark*
+┏━━━━━━━━━━━━━━━━┓
+┃ /darkgen <prompt> ┃ Génération
+┃ /darkweather      ┃ Météo
+┃ /darkquote        ┃ Citations
+┗━━━━━━━━━━━━━━━━┛
 
 📚 *Définitions*
-/defdark <mot> – Définition automatique version dark
+┏━━━━━━━━━━━━━━━━┓
+┃ /defdark <mot> ┃ Définition
+┗━━━━━━━━━━━━━━━━┛
 
 ⚙️ *Divers*
-/ping – Vérifier la latence du bot
-/uptime – Durée de fonctionnement du bot
-/info – Informations générales
-/ai ou /kyo <question> – Pose une question à l’IA
-/tagall – Mentionner tous les membres du groupe
+┏━━━━━━━━━━━━━━━━┓
+┃ /ping    ┃ Latence
+┃ /uptime  ┃ Fonctionnement
+┃ /info    ┃ Infos
+┃ /ai      ┃ IA
+┃ /tagall  ┃ Mentionner
+┗━━━━━━━━━━━━━━━━┛
 """
-    await update.message.reply_text(help_text, parse_mode="Markdown")
+    try:
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=help_image_url,
+            caption=help_text,
+            parse_mode="Markdown"
+        )
+    except:
+        await update.message.reply_text(help_text, parse_mode="Markdown")
