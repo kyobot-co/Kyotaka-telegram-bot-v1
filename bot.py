@@ -29,6 +29,7 @@ async def run_bot():
     application = ApplicationBuilder().token(TOKEN).build()
     application.bot_data["start_time"] = time.time()
 
+    # Importations des commandes
     from commands.kick import kick
     from commands.unban import unban
     from commands.help_cmd import help_command
@@ -54,9 +55,13 @@ async def run_bot():
     from commands.lock import lock
     from commands.tagall import tagall
     from commands.welcome import welcome
-    from commands.vpninfo import vpninfo_handler
     from commands.voice import voice_handler
+    
+    # Modification pour vpninfo
+    from commands.vpninfo import register_handlers as register_vpn_handlers
+    register_vpn_handlers(application)
 
+    # Ajout des handlers
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("kick", kick))
@@ -82,7 +87,6 @@ async def run_bot():
     application.add_handler(CommandHandler("nightmode", nightmode))
     application.add_handler(CommandHandler("lock", lock))
     application.add_handler(CommandHandler("tagall", tagall))
-    application.add_handler(CommandHandler("vpninfo", vpninfo_handler))
     application.add_handler(CommandHandler("voice", voice_handler))
     application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
 
