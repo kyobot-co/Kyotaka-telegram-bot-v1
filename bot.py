@@ -4,33 +4,33 @@ import asyncio
 from flask import Flask
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-from commands.kick import add_handler as add_kick_handler
-from commands.unban import add_handler as add_unban_handler
-from commands.help_cmd import add_handler as add_help_handler
-from commands.info import add_handler as add_info_handler
-from commands.ttp import add_handler as add_ttp_handler
-from commands.lirik import add_handler as add_lirik_handler
-from commands.ass import add_handler as add_ass_handler
-from commands.boobs import add_handler as add_boobs_handler
-from commands.hboobs import add_handler as add_hboobs_handler
-from commands.ipinfo import add_handler as add_ipinfo_handler
-from commands.darkgen import add_handler as add_darkgen_handler
-from commands.darkweather import add_handler as add_darkweather_handler
-from commands.defdark import add_handler as add_defdark_handler
-from commands.darkquote import add_handler as add_darkquote_handler
-from commands.ping import add_handler as add_ping_handler
-from commands.uptime import add_handler as add_uptime_handler
-from commands.nsfw import add_handler as add_nsfw_handler
-from commands.ai_kyo import add_handler as add_ai_kyo_handler
-from commands.ban import add_handler as add_ban_handler
-from commands.mute import add_handler as add_mute_handler
-from commands.unmute import add_handler as add_unmute_handler
-from commands.nightmode import add_handler as add_nightmode_handler
-from commands.lock import add_handler as add_lock_handler
-from commands.tagall import add_handler as add_tagall_handler
-from commands.welcome import add_handler as add_welcome_handler
-from commands.vpninfo import add_handler as add_vpninfo_handler
-from commands.voice import add_handler as add_voice_handler
+from commands.kick import kick
+from commands.unban import unban
+from commands.help_cmd import help_command
+from commands.info import info
+from commands.ttp import ttp
+from commands.lirik import lirik
+from commands.ass import ass
+from commands.boobs import boobs
+from commands.hboobs import hboobs
+from commands.ipinfo import ipinfo
+from commands.darkgen import darkgen
+from commands.darkweather import darkweather
+from commands.defdark import defdark
+from commands.darkquote import darkquote
+from commands.ping import ping
+from commands.uptime import uptime
+from commands.nsfw import nsfw
+from commands.ai_kyo import ai_kyo
+from commands.ban import ban
+from commands.mute import mute
+from commands.unmute import unmute
+from commands.nightmode import nightmode
+from commands.lock import lock
+from commands.tagall import tagall
+from commands.welcome import welcome
+from commands.vpninfo import vpninfo_handler
+from commands.voice import voice_handler
 import time
 import os
 
@@ -56,33 +56,34 @@ async def run_bot():
     application = ApplicationBuilder().token(TOKEN).build()
     application.bot_data["start_time"] = time.time()
 
-    add_kick_handler(application)
-    add_unban_handler(application)
-    add_help_handler(application)
-    add_info_handler(application)
-    add_ttp_handler(application)
-    add_lirik_handler(application)
-    add_ass_handler(application)
-    add_boobs_handler(application)
-    add_hboobs_handler(application)
-    add_ipinfo_handler(application)
-    add_darkgen_handler(application)
-    add_darkweather_handler(application)
-    add_defdark_handler(application)
-    add_darkquote_handler(application)
-    add_ping_handler(application)
-    add_uptime_handler(application)
-    add_nsfw_handler(application)
-    add_ai_kyo_handler(application)
-    add_ban_handler(application)
-    add_mute_handler(application)
-    add_unmute_handler(application)
-    add_nightmode_handler(application)
-    add_lock_handler(application)
-    add_tagall_handler(application)
-    add_vpninfo_handler(application)
-    add_welcome_handler(application)
-    add_voice_handler(application)
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("kick", kick))
+    application.add_handler(CommandHandler("unban", unban))
+    application.add_handler(CommandHandler("ban", ban))
+    application.add_handler(CommandHandler("info", info))
+    application.add_handler(CommandHandler("ttp", ttp))
+    application.add_handler(CommandHandler("lirik", lirik))
+    application.add_handler(CommandHandler("ass", ass))
+    application.add_handler(CommandHandler("boobs", boobs))
+    application.add_handler(CommandHandler("hboobs", hboobs))
+    application.add_handler(CommandHandler("ipinfo", ipinfo))
+    application.add_handler(CommandHandler("darkgen", darkgen))
+    application.add_handler(CommandHandler("darkweather", darkweather))
+    application.add_handler(CommandHandler("defdark", defdark))
+    application.add_handler(CommandHandler("darkquote", darkquote))
+    application.add_handler(CommandHandler("ping", ping))
+    application.add_handler(CommandHandler("uptime", uptime))
+    application.add_handler(CommandHandler("nsfw", nsfw))
+    application.add_handler(CommandHandler(["ai","kyo"], ai_kyo))
+    application.add_handler(CommandHandler("mute", mute))
+    application.add_handler(CommandHandler("unmute", unmute))
+    application.add_handler(CommandHandler("nightmode", nightmode))
+    application.add_handler(CommandHandler("lock", lock))
+    application.add_handler(CommandHandler("tagall", tagall))
+    application.add_handler(CommandHandler("vpninfo", vpninfo_handler))
+    application.add_handler(CommandHandler("voice", voice_handler))
+    application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
 
     await application.initialize()
     await application.start()
