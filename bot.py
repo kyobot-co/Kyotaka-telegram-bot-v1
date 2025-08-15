@@ -34,7 +34,7 @@ from commands.voice import add_handler as add_voice_handler
 import time
 import os
 
-TOKEN = os.getenv("TELEGRAM_TOKEN", "METS_LE_TOKEN_DE_TON_BOT_ICI")
+TOKEN = os.getenv("TELEGRAM_TOKEN", "7640665785:AAHMvh2nZy9Gwa4K42rubSU_8QBtBekoWoc")
 PORT = int(os.environ.get("PORT", 10000))
 
 logging.basicConfig(
