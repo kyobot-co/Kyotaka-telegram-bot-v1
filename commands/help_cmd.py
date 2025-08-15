@@ -3,7 +3,6 @@ from telegram.ext import CallbackContext
 
 async def help_command(update: Update, context: CallbackContext):
     help_image_url = "https://files.catbox.moe/7zi7fd.jpg"
-    
     help_text = """
 ╔════════════════╗
        🧠 *DARK KYOTAKA HELP* 📱
@@ -30,12 +29,14 @@ async def help_command(update: Update, context: CallbackContext):
 📡 *Réseau*
 ┏━━━━━━━━━━━━━━━━┓
 ┃ /ipinfo <ip> ┃ Infos IP
+┃ /vpninfo <lien> ┃ Analyse VPN
 ┗━━━━━━━━━━━━━━━━┛
 
 🎵 *Média*
 ┏━━━━━━━━━━━━━━━━┓
 ┃ /lirik <titre> ┃ Paroles
 ┃ /ttp <texte>   ┃ Sticker texte
+┃ /voice <texte> - <perso> ┃ Voix perso
 ┗━━━━━━━━━━━━━━━━┛
 
 🔞 *NSFW*
@@ -74,5 +75,11 @@ async def help_command(update: Update, context: CallbackContext):
             caption=help_text,
             parse_mode="Markdown"
         )
-    except:
-        await update.message.reply_text(help_text, parse_mode="Markdown")
+    except Exception as e:
+        try:
+            await context.bot.send_media_group(
+                chat_id=update.effective_chat.id,
+                media=[InputMediaPhoto(help_image_url, caption=help_text, parse_mode="Markdown")]
+            )
+        except:
+            await update.message.reply_text(help_text, parse_mode="Markdown")
