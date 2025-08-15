@@ -29,6 +29,8 @@ from commands.nightmode import nightmode
 from commands.lock import lock
 from commands.tagall import tagall
 from commands.welcome import add_handler as add_welcome_handler
+from commands.vpninfo import vpninfo_handler
+from commands.voice import add_handler as add_voice_handler
 import time
 import os
 
@@ -79,13 +81,15 @@ async def run_bot():
         CommandHandler("nightmode", nightmode),
         CommandHandler("lock", lock),
         CommandHandler("tagall", tagall),
-        CommandHandler(["ai","kyo"], ai_kyo)
+        CommandHandler(["ai","kyo"], ai_kyo),
+        CommandHandler("vpninfo", vpninfo_handler)
     ]
 
     for handler in handlers:
         application.add_handler(handler)
-    
+
     add_welcome_handler(application)
+    add_voice_handler(application)
 
     await application.initialize()
     await application.start()
