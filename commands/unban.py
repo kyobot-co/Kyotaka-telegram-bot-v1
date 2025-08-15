@@ -1,42 +1,33 @@
-from telegram import Update, ChatPermissions
-from telegram.ext import ContextTypes, CommandHandler
-from datetime import datetime, timedelta
+from telegram import Update
+from telegram.ext import ContextTypes
 
-async def unmute(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Vérification admin
-    if not update.effective_chat.get_member(update.effective_user.id).status in ['administrator', 'creator']:
-        await update.message.reply_text("❌ Seuls les admins peuvent utiliser cette commande.")
-        return
-    
-    # Vérification reply
+async def unban(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message.reply_to_message:
-        await update.message.reply_text("⚠️ Réponds au message de l'utilisateur à unmute.")
+        await update.message.reply_text("⚠️ Réponds au message de la personne à débannir")
         return
+
+    if not await is_admin(update, context):
+        await update.message.reply_text("❌ Seuls les admins peuvent utiliser cette commande")
+        return
+
+    user = update.message.reply_to_message.from_user
+    chat_id = update.effective_chat.id
 
     try:
-        user = update.message.reply_to_message.from_user
-        chat = update.effective_chat
-        
-        # Rétablit TOUTES les permissions
-        await context.bot.restrict_chat_member(
-            chat.id,
-            user.id,
-            ChatPermissions(
-                can_send_messages=True,
-                can_send_media_messages=True,
-                can_send_polls=True,
-                can_send_other_messages=True,
-                can_add_web_page_previews=True,
-                can_change_info=False,  # Garde cette permission désactivée si voulu
-                can_invite_users=True,
-                can_pin_messages=False
-            ),
-            until_date=datetime.now() + timedelta(seconds=1)  # Contourne un bug Telegram
+        await context.bot.unban_chat_member(
+            chat_id=chat_id,
+            user_id=user.id,
+            only_if_banned=True
         )
-        
-        await update.message.reply_text(f"🔊 {user.full_name} a été unmute.")
+        await update.message.reply_text(f"✅ {user.full_name} a été débanni du groupe")
     except Exception as e:
         await update.message.reply_text(f"❌ Erreur: {str(e)}")
 
+async def is_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.effective_user:
+        return False
+    admins = await context.bot.get_chat_administrators(update.effective_chat.id)
+    return any(admin.user.id == update.effective_user.id for admin in admins)
+
 def add_handler(application):
-    application.add_handler(CommandHandler("unmute", unmute))
+    application.add_handler(CommandHandler("unban", unban))
