@@ -5,7 +5,7 @@ from flask import Flask
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 from commands.kick import kick
-from commands.unban import unban
+from commands.unban import add_handler as add_unban_handler
 from commands.help_cmd import help_command
 from commands.info import info
 from commands.ttp import ttp
@@ -60,7 +60,6 @@ async def run_bot():
         CommandHandler("start", start),
         CommandHandler("help", help_command),
         CommandHandler("kick", kick),
-        CommandHandler("unban", unban),
         CommandHandler("ban", ban),
         CommandHandler("info", info),
         CommandHandler("ipinfo", ipinfo),
@@ -90,6 +89,7 @@ async def run_bot():
 
     add_welcome_handler(application)
     add_voice_handler(application)
+    add_unban_handler(application)
 
     await application.initialize()
     await application.start()
