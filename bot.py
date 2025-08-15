@@ -3,34 +3,7 @@ import threading
 import asyncio
 from flask import Flask
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-from commands.kick import kick
-from commands.unban import unban
-from commands.help_cmd import help_command
-from commands.info import info
-from commands.ttp import ttp
-from commands.lirik import lirik
-from commands.ass import ass
-from commands.boobs import boobs
-from commands.hboobs import hboobs
-from commands.ipinfo import ipinfo
-from commands.darkgen import darkgen
-from commands.darkweather import darkweather
-from commands.defdark import defdark
-from commands.darkquote import darkquote
-from commands.ping import ping
-from commands.uptime import uptime
-from commands.nsfw import nsfw
-from commands.ai_kyo import ai_kyo
-from commands.ban import ban
-from commands.mute import mute
-from commands.unmute import unmute
-from commands.nightmode import nightmode
-from commands.lock import lock
-from commands.tagall import tagall
-from commands.welcome import welcome
-from commands.vpninfo import vpninfo_handler
-from commands.voice import voice_handler
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 import time
 import os
 
@@ -55,6 +28,34 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def run_bot():
     application = ApplicationBuilder().token(TOKEN).build()
     application.bot_data["start_time"] = time.time()
+
+    from commands.kick import kick
+    from commands.unban import unban
+    from commands.help_cmd import help_command
+    from commands.info import info
+    from commands.ttp import ttp
+    from commands.lirik import lirik
+    from commands.ass import ass
+    from commands.boobs import boobs
+    from commands.hboobs import hboobs
+    from commands.ipinfo import ipinfo
+    from commands.darkgen import darkgen
+    from commands.darkweather import darkweather
+    from commands.defdark import defdark
+    from commands.darkquote import darkquote
+    from commands.ping import ping
+    from commands.uptime import uptime
+    from commands.nsfw import nsfw
+    from commands.ai_kyo import ai_kyo
+    from commands.ban import ban
+    from commands.mute import mute
+    from commands.unmute import unmute
+    from commands.nightmode import nightmode
+    from commands.lock import lock
+    from commands.tagall import tagall
+    from commands.welcome import welcome
+    from commands.vpninfo import vpninfo_handler
+    from commands.voice import voice_handler
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
