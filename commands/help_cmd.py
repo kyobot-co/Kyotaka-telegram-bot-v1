@@ -2,7 +2,7 @@ from telegram import Update, InputMediaPhoto
 from telegram.ext import CallbackContext
 
 async def help_command(update: Update, context: CallbackContext):
-    help_image_url = "https://i.ibb.co/KhYC4FY/1221bc0bdd2354b42b293317ff2adbcf-icon.png"
+    help_image_url = "https://files.catbox.moe/7zi7fd.jpg"
     
     help_text = """
 ╔════════════════╗
