@@ -1,44 +1,55 @@
 import aiohttp
-import asyncio
 from telegram import Update
 from telegram.ext import ContextTypes
-import urllib.parse
 
+GENIUS_TOKEN = "FqKltcvASxUTv1yXKpfswwyIuXDqzorhjZEdzs3RgTqG0pLfQrfkr57E9v4xdWhXuSzVf0wEtX7gzjnEOXFWjA"
 MAX_TELEGRAM_CHARS = 4000
-API_BASE = "https://api.vagalume.com.br/search.php?art={artist}&mus={title}&extra=lyrics"
 
 async def lirik(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if not context.args or "-" not in " ".join(context.args):
-        await update.effective_message.reply_text("Utilisation : /lirik <artiste> - <titre>")
+    if not context.args:
+        await update.effective_message.reply_text("Utilisation : /lirik <titre chanson>")
         return
 
-    artist, title = map(str.strip, " ".join(context.args).split("-", 1))
-    await update.effective_message.reply_text("🔍 Recherche des paroles...")
+    query = " ".join(context.args)
 
     try:
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=15)) as session:
-            url = API_BASE.format(
-                artist=urllib.parse.quote_plus(artist),
-                title=urllib.parse.quote_plus(title)
-            )
-            async with session.get(url) as resp:
+        await update.effective_message.reply_text("🔍 Recherche des paroles...")
+
+        headers = {"Authorization": f"Bearer {GENIUS_TOKEN}"}
+        async with aiohttp.ClientSession(headers=headers) as session:
+            search_url = f"https://api.genius.com/search?q={query}"
+            async with session.get(search_url) as resp:
                 if resp.status != 200:
-                    await update.effective_message.reply_text("❌ Aucune parole trouvée")
+                    await update.effective_message.reply_text("❌ Erreur lors de la recherche")
                     return
                 data = await resp.json()
-                mus = data.get("mus")
-                if not mus:
-                    await update.effective_message.reply_text("❌ Aucune parole trouvée")
+                hits = data.get("response", {}).get("hits", [])
+                if not hits:
+                    await update.effective_message.reply_text("❌ Aucun résultat trouvé")
                     return
-                lyrics = mus[0].get("text", "")
-                if not lyrics:
-                    await update.effective_message.reply_text("❌ Aucune parole trouvée")
+                song = hits[0]["result"]
+                title = song.get("title", query)
+                artist = song.get("primary_artist", {}).get("name", "")
+                lyrics_url = song.get("url")
+
+            async with session.get(lyrics_url) as resp:
+                if resp.status != 200:
+                    await update.effective_message.reply_text("❌ Paroles introuvables")
                     return
-                if len(lyrics) > MAX_TELEGRAM_CHARS:
-                    lyrics = lyrics[:MAX_TELEGRAM_CHARS] + "\n[...]"
-                response = f"🎵 <b>{title}</b> - <i>{artist}</i>"
-                await update.effective_message.reply_text(f"{response}\n\n<pre>{lyrics}</pre>", parse_mode="HTML")
-    except asyncio.TimeoutError:
-        await update.effective_message.reply_text("⌛ Temps d'attente dépassé")
+                html = await resp.text()
+
+        import re
+        match = re.search(r'<div class="lyrics">.*?<p>(.*?)</p>', html, re.S)
+        if match:
+            lyrics = re.sub(r'<.*?>', '', match.group(1)).strip()
+        else:
+            lyrics = "Paroles non trouvées"
+
+        if len(lyrics) > MAX_TELEGRAM_CHARS:
+            lyrics = lyrics[:MAX_TELEGRAM_CHARS] + "\n[...]"
+
+        response = f"🎵 <b>{title}</b> - <i>{artist}</i>\n\n<pre>{lyrics}</pre>"
+        await update.effective_message.reply_text(response, parse_mode="HTML")
+
     except Exception as e:
         await update.effective_message.reply_text(f"⚠️ Erreur : {str(e)}")
