@@ -4,20 +4,15 @@ from telegram.ext import ContextTypes
 
 async def lirik(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not context.args:
-        await update.message.reply_text("Utilisation : /lirik <artiste> - <titre>")
+        await update.message.reply_text("Utilisation : /lirik <titre ou artiste>")
         return
 
     query = " ".join(context.args)
-    if "-" not in query:
-        await update.message.reply_text("⚠️ Format : /lirik <artiste> - <titre>")
-        return
-
-    artist, title = map(str.strip, query.split("-", 1))
     await update.message.reply_text("🔍 Recherche des paroles...")
 
     try:
         async with aiohttp.ClientSession() as session:
-            url = f"https://api.lyrics.ovh/v1/{artist}/{title}"
+            url = f"https://some-random-api.com/lyrics?title={query}"
             async with session.get(url) as resp:
                 data = await resp.json()
 
@@ -25,7 +20,10 @@ async def lirik(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                     await update.message.reply_text("❌ Paroles non trouvées")
                     return
 
+                title = data.get("title", "Inconnu")
+                artist = data.get("author", "Inconnu")
                 lyrics = data["lyrics"]
+
                 if len(lyrics) > 4000:
                     lyrics = lyrics[:3990] + "...\n\n(Paroles coupées)"
 
